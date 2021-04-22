@@ -9,13 +9,25 @@
 <body>
 
     <?php
-         
+         //var 
         
         $a = 3;
 
         $b = 5;
 
         $c = 7;
+
+        //afficher var
+
+        echo "************AVANT PERMUTATION***************";
+        
+        echo "<p>a :$a </p>";
+        echo "<p>b :$b </p>";
+        echo "<p>c :$c </p>";
+
+        //interchanger
+
+        echo "************APRES PERMUTATION***************";
 
         echo "<p>a :$b </p>";
         echo "<p>b :$c </p>";
