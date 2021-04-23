@@ -51,7 +51,7 @@
 
         echo "<p>$Nom à $Age ans, et c'est un $Genre</p>";
        echo "<p>$Nom2 à $Age2 ans, et c'est une $Genre2</p>";
-*/
+
  
     //declaration tableau
 
@@ -64,7 +64,7 @@
         'âge' => 69,
         'profession' => "secrétaire aux admissions urgences/ BabyDev"
     ];
-?>
+
 
 <!-- inclure le tableau dans un p-->
 
@@ -72,7 +72,109 @@
     <p>Bonjour <?= $personne['nom']?> <?= $personne['prénom']?> j'ai <?= $personne['âge'] ?> ans et je suis <?= $personne['profession']?> </p>
 
 <!--C'est toutttttt hein-->
-    
+
+
+//exo 004
+
+$nombre = rand($min = 1, $max = 20);
+
+
+
+echo"<h3>le nombre tiré au sort est: $nombre </h3>";
+
+if($nombre >= 1 && $nombre < 6 )
+{
+    echo"il est compris entre 1 et 5.";
+}
+
+if($nombre > 5 && $nombre < 11 )
+{
+    echo"il est compris entre 6 et 10.";
+}
+
+if($nombre > 10 && $nombre < 16 )
+{
+    echo"il est compris entre 11 et 15.";
+}
+
+if($nombre > 15 && $nombre <= 20 )
+{
+    echo"il est compris entre 16 et 20.";
+}
+
+//exo 5
+
+$nombre = rand($min = 1, $max = 100);
+$nombre2 = rand($min = 1, $max = 100);
+$abs = abs($nombre - $nombre2);
+
+
+
+
+echo "<p>chiffre 1 = $nombre </p>";
+echo "<p>chiffre 2 = $nombre2 </p>";
+
+echo " <p>Valeur absolue = $abs</p>";
+
+
+if($abs > 25 && $abs <= 75)
+{
+    echo" la valeur absolue de $nombre et de $nombre2 il est compris entre 25 et 75.";
+}
+*/
+
+//exo 6
+
+$nombre = rand($min = 1, $max = 12);
+
+$mois = ["janvier", "février", "mars", "avril", "mai", "juin", "juillet", "aout", "septembre", "octobre", "novembre", "décembre"];
+
+
+switch($nombre){
+        case 0:
+            echo '$mois';
+            break;
+        case 1:
+            echo '$mois';
+            break;
+        case 2:
+            echo '$mois';
+            break;
+        case 3:
+            echo '$mois';
+            break;
+        case 4:
+            echo '$mois';
+            break;
+        case 5:
+            echo '$mois';
+            break;
+        case 6:
+            echo '$mois';
+            break;
+        case 7:
+            echo '$mois';
+            break;
+        case 8:
+            echo '$mois';
+            break;
+        case 9:
+            echo '$mois';
+            break;
+            case 10:
+                echo '$mois';
+                break;
+            case 11:
+                echo '$mois';
+                break;
+    default:
+
+        echo '$mois';
+
+
+
+
+ ?>   
     
 </body>
 </html>
