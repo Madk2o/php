@@ -121,7 +121,7 @@ if($abs > 25 && $abs <= 75)
 {
     echo" la valeur absolue de $nombre et de $nombre2 il est compris entre 25 et 75.";
 }
-*/
+
 
 //exo 6
 
@@ -170,9 +170,9 @@ switch($nombre){
     default:
 
         echo '$mois';
+//si tu vois ceci je suis bloqué ici petit erreur de syntaxe merci guy
 
-
-
+*/
 
  ?>   
     
