@@ -61,14 +61,32 @@ echo "<p>Le nombre choisi est $n</p>";//indique le monbre choisi supérieur à 1
 */
 
 //exo 10
-$i = 20 ;
+$i = 4 ;
+$message = "";
 $noteDeGuy = [];
 array_push($noteDeGuy, rand(0, 20), rand(0, 20), rand(0, 20), rand(0, 20), rand(0, 20), rand(0, 20), rand(0, 20), rand(0, 20), rand(0, 20), rand(0, 20)
 , rand(0, 20), rand(0, 20), rand(0, 20), rand(0, 20), rand(0, 20), rand(0, 20), rand(0, 20), rand(0, 20), rand(0, 20), rand(0, 20));
 print_r($noteDeGuy);
 
-echo "sum(a)" .array_sum($noteDeGuy) / $i.  "\n";
+echo "sum(a)" .array_sum($noteDeGuy) / $i .  "\n";
 
+
+if($noteDeGuy <= 30){
+    $message = "ça ira mieux l année proshaine!!!";
+}elseif($noteDeGuy > 30 && $noteDeGuy <= 50){
+    $message = "Voilà pourquoi il ne faut pas regarder des stream jv durant les cours!";
+}elseif($noteDeGuy > 50 && $noteDeGuy <= 60){
+    $message = "pas de bol, t y était presque !!!";
+}elseif($noteDeGuy > 60 && $noteDeGuy <= 70){
+    $message = "ça passe... sans classe, mais ça passe !!!";
+}elseif($noteDeGuy > 70 && $noteDeGuy <= 80){
+    $message = "Bien joué, objectif atteint!!!";
+}else ($noteDeGuy > 80 && $noteDeGuy <= 100){
+    $message = "Master Class, 5 étoiles pour toi"; 
+}
+
+echo"<p> $message </p>";
+//je lache pour cet exo si j'ai le temps d'y revenir avant demain matin...
 ?>
 
 
