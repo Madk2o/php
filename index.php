@@ -1,75 +1,161 @@
-<!DOCTYPE html>
-<html lang="fr">
-<head>
-    <meta charset="UTF-8">
-    <meta http-equiv="X-UA-Compatible" content="IE=edge">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>bitly</title>
-    <link rel="stylesheet" href="/styles.css">
+<?php
+session_start();
+    // Vérifier si mon url contient la variable superglobales $_GET["q"]
+    if(isset($_GET["q"])){
+        // on encapsule le shortcut dans une variable
+        $shortcut = htmlspecialchars($_GET["q"]);
+
+        // On vérifie si c'est un vrai shortcut
+        $bdd = new PDO("mysql:host=localhost;dbname=bitly3;charset=utf8", "root", "");
+        $requete = $bdd->prepare("SELECT COUNT(*) AS x 
+                                FROM liens 
+                                WHERE shortcut = ?");
+        $requete->execute(array($shortcut));
+
+        while($result = $requete->fetch()){
+            if($result["x"] != 1){
+                header("location: ../?error=true&message=Adresse url non reconnue, veuillez la racourcir");
+                exit();
+            }
+        }
+
+        // Si l'url est valide, on peut rediriger le visiteur vers l'url cible
+        $requete = $bdd->prepare("SELECT * 
+                                FROM liens
+                                WHERE shortcut = ?");
+        $requete->execute(array($shortcut));
+        while($result = $requete->fetch()){
+            header("location: " . $result["url"]); 
+            exit();
+        }
+    }
+    // Vérifier si formulaire recu
+if(isset($_POST["url"]) && !empty($_POST["url"])){
+    // envoyer url dans variable
+    // Check si l'url est valide
+    // Créer le raccourci de l'url unique
+    // Vérifier si l'url à déjà été proposée
+    // Envoyer les donées vers la db
+    // Afficher l'url raccourcie au visiteur
+    // mise en place de la relation url raccourcie + lien physique dans l db
     
-</head>
-<body>
-<header>
-        <a href="#">
-            <img class="imghead" src="/src/img/bitly-logo.png" alt="BitlyLogo">
-        </a>
-        <nav>
-            <ul class="listmod">
-            <li><a href="#">Why Bitly?</a></li>
-            <li><a href="#">Solution</a></li>
-            <li><a href="#">features</a></li>
-            <li><a href="#">Pricing</a></li>
-            <li><a href="#">Ressource</a></li>
-            </ul>
-        </nav>
-        <nav>
-            <ul class="listmod">
-            <li><a href="#">Login</a></li>
-            <li><a href="#">Sign up</a></li>
-            <li><a href="#">Get a Quote</a></li>
-            </ul>
-        </nav>
-</header>
-<section class="section1">
-    <div class="div1">
-        <h1>Short links, big results</h1>
-        <p>A URL shortener built with powerful tools to help you grow and protect your brand.</p>
-        <a href="#">Get Started for Free</a>
-    </div>
+    /*****************************
+    // Envoyer url dans variable
+     *****************************/
+    $url = $_POST["url"];
 
-    <img src="/src/img/background-mobile.jpg" alt="imageBackground">
+    /*****************************
+    // check si l'url est valide **
+    ******************************/
+    // avec la fonction filter_var() qui prendra en 1er paramètre
+    // la variable à vérifier, et en second FILTER_VALIDATE_URL. Cette fonction va renvoyer un boolean
+    if(!filter_var($url, FILTER_VALIDATE_URL)){
+        // Si l'url n'est pas un lien, on simule un get qui prends en valeur 
+        // un boolean et un message:
+        header('location: ../?error=true&message=url non valide');
+        // Quand on demande une redirection, il est important de stopper le script juste après
+        // l'execution de la redirection (encore + important si plusieures redirection possible sur la page)
+        exit();
+    }
 
-</section>
 
-<section class="sectionform">
-    <form>
-        <input type="text">
-        <input type="submit">
+    /****************************************
+    // créer le raccourci de l'url unique  **
+    *****************************************/
+
+    // On utilise la fonction crypt, qui prends deux paramètres: la variable à crypter
+    // et un grain de sel. Dans ce cas, on utilisera un grain de sel aléatoire qu'on provoquera avec 
+    // la fonction rand()
+    $shortcut = crypt($url, rand());
+
+    // Vérifier si l'url n'a pas déjà été envoyée dans la db
+    $bdd = new PDO("mysql:host=localhost;dbname=bitly3;charset=utf8", "root", "");
+    // Si le count(*) > 0, cela veut dire que mon adresse existe déjà dans ma bd, je selectionne
+    // aussi la colone shortcut pour pouvoir redonner le racourci de l'url
+    $requete = $bdd->prepare('SELECT COUNT(*) AS x , shortcut
+                            FROM liens 
+                            WHERE url = ? ');
+    $requete->execute(array($url));
+
+    // Boucle pour vérifier que l'url n'existe pas déjà dans ma db
+    while($result = $requete->fetch()){
+        if($result["x"] != 0){
+            // Je récupère l'url raccourcie liée à cette entrée et la place dans une session
+            // pour afficher plus bas le raccourcis en question
+            $_SESSION["shortcut"] =$result["shortcut"];
+            // Je renvoie vers une url qui simule un $_GET et comme je crée un $_Get['erreur]
+            // Je vais déclencher l'apparition du message en dessous du formulaire de la page.
+            header("location: ../?error=true&message=Adresse déjà raccourcie");
+            exit();
+        }
+    }
+
+
+        // Si la boucle précédente n'a pas déclenchée d'erreur et donc n'a pas stoppé le script,
+        // on peut envoyer vers base de données
+        // Si le user n'est pas connecté, on envoie la requête sans user_id
+        $requete = $bdd->prepare('INSERT INTO liens(url, shortcut) VALUES(?, ?)');
+        $requete->execute(array($url, $shortcut));
+
+    // On redirige avec une simulation de $_GET à qui on attribue une key short 
+    // qui contient le raccourci de l'url
+    header("location: ../?short=" . $shortcut);
+    exit();
+}
+    // variable
+    $titre = "projet bitly";
+    $description = "Shorten your Link";
+    require "./src/controller/doctype.php";
+    require "./src/controller/header.php";
+    require "./src/controller/hero.php";
+    
+?>
+
+
+<section class="link">
+    <form action="../" method="post">
+        <input type="url" name="url" placeholder="<?= $description ?>">
+        <input type="submit" value="Shorten">
     </form>
-    <p>By clicking SHORTEN, you are agreeing to Bitly’s <a href="#"> Terms of Service and Policy</a> 
-        
-        
-    </p>
+    <p>By clicking SHORTEN, you are agreeing to Bitly’s <span>Terms of Service</span> and <span>Privacy Policy</span></p>
+
+    <?php
+        //si l'url de notre page est un $_GET que qu'un index error existe
+        // Afficher à l'utilisateur qu'il s'est gouré
+        if(isset($_GET["error"]) && $_GET["message"]){
+            if($_GET["message"] == "Adresse déjà raccourcie"){
+                ?>
+            <div class="erreur">
+                <h4> <?= $_GET["message"] ?> </h4>
+                <h4>L'url raccourcie est:</h4>
+                <h3> http://localhost/?q=<?= $_SESSION["shortcut"] ?></h3></h3>
+            </div>
+        <?php
+            } else {
+            ?>
+            <div class="erreur">
+                <h4> <?= $_GET["message"] ?> </h4>
+            </div>
+        <?php 
+            } 
+        }
+        // Si il existe la key "Short" dans ma variable superglobale $_GET
+        // je peux afficher le lien raccourci de l'url envoyée par le user -->
+        else if(isset($_GET["short"]))
+        { ?>
+            <div class="erreur">
+                <h4>URL Raccourcie:</h4>
+                <!-- Le ?q= après mon nom de domaine vient simuler un $_GET -->
+                <h3>http://localhost/?q=<?= htmlspecialchars($_GET["short"])?></h3>
+            </div>
+<?php
+        }
+
+?>
+
 </section>
 
-<section class="sectionh2">
-    <h2>The most recognized brands in the world love Bitly</h2>
-    <div class="imagesech2">
-        <img src="/src/img/Logo01.svg" alt="Logo">
-        <img src="/src/img/Logo02.svg" alt="Logo">
-        <img src="/src/img/Logo03.svg" alt="Logo">
-        <img src="/src/img/Logo03b.svg" alt="Logo">
-        <img src="/src/img/Logo04.svg" alt="Logo">
-        <img src="/src/img/Logo05.svg" alt="Logo">
-        <img src="/src/img/Logo06.svg" alt="Logo">
-    </div>
-</section>
-
-
-
-<footer>
-    <img src="/src/img/bitly-logo.png" alt="BitlyLogo">
-    <p>2021 Bitly ©</p>
-</footer>
-</body>
-</html>
+<?php 
+    require "./src/controller/sponsor.php";
+    require "./src/controller/footer.php"; 
+    ?>
