@@ -12,7 +12,7 @@
 
     <nav>
         <ul>
-            <li><a href="#">Login</a></li>
+            <li><a href="../src/autre/connection.php">Login</a></li>
             <li><a href="../src/autre/inscription.php">inscription</a></li>
             <li><a href="#">Get a Quote</a></li>
         </ul>

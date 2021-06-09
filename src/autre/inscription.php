@@ -19,7 +19,7 @@ if (isset($_POST['submit']))
             $insertuser = $bdd->prepare("INSERT INTO user(login, nom, prénom, email, password) VALUES(?, ?, ?, ?, ?)");
             $insertuser->execute(array($login, $nom, $prénom, $email, $password));
             $_SESSION['usercree'] = "votre compte est crée";
-            header('Location: inscription.php');
+            header('Location: ./connection.php');
             
 
         }

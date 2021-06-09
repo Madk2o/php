@@ -30,7 +30,7 @@
         <ul>
             <li><a href="../../src/page/login.php">Login</a></li>
             <li><a href="../../src/page/inscription.php">Sign up<a></li>
-            <li><a href="#">Get a Quote</a></li>
+            <li><a href="../../src/page/users.php">Profil</a></li>
         </ul>
     </nav>
 </header>
